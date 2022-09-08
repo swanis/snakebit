@@ -51,6 +51,15 @@ loops.everyInterval(speed, function () {
     if (started) {
         snakeX += dX
         snakeY += dY
+        if (snakeX > 4) {
+            snakeX = 0
+        } else if (snakeX < 0) {
+            snakeX = 4
+        } else if (snakeY > 4) {
+            snakeY = 0
+        } else if (snakeY < 0) {
+            snakeY = 4
+        }
         turned = 0
     } else {
         started = 1
