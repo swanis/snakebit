@@ -1,3 +1,12 @@
+radio.onReceivedNumber(function (receivedNumber) {
+    if (receivedNumber == 0) {
+        radio.sendNumber(10)
+    } else {
+        if (asked) {
+            id += 1
+        }
+    }
+})
 input.onButtonPressed(Button.A, function () {
     if (!(turned)) {
         if (dX == 1) {
@@ -38,6 +47,14 @@ let started = 0
 let turned = 0
 let dY = 0
 let dX = 0
+let asked = 0
+radio.setGroup(121)
+radio.sendNumber(0)
+asked = 1
+let id = 0
+basic.pause(1000)
+asked = 0
+basic.showNumber(id)
 let speed = 1000
 let snakeX = 2
 let snakeY = 2
@@ -48,7 +65,7 @@ basic.forever(function () {
     led.plot(snakeX, snakeY)
 })
 loops.everyInterval(speed, function () {
-    if (started) {
+    if (started && id == 0) {
         snakeX += dX
         snakeY += dY
         if (snakeX > 4) {
