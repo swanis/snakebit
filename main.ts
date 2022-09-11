@@ -144,7 +144,6 @@ basic.forever(function () {
             } else {
                 if (id == 0) {
                     snakeX = 0
-                    led.plotBrightness(snakeX, snakeY, 200)
                 } else {
                     radio.setGroup(122)
                     current = 0
@@ -161,7 +160,6 @@ basic.forever(function () {
                 last = lastMicrobit()
                 if (last == 122) {
                     snakeX = 4
-                    led.plotBrightness(snakeX, snakeY, 200)
                 } else {
                     radio.setGroup(last)
                     current = 0
