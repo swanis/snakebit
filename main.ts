@@ -190,7 +190,7 @@ basic.forever(function () {
             snakeY = 4
         }
         basic.clearScreen()
-        led.plot(snakeX, snakeY)
+        led.plotBrightness(snakeX, snakeY, 200)
         turned = 0
     }
 })
