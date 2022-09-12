@@ -1,3 +1,7 @@
+enum RadioMessage {
+    message1 = 49434,
+    start = 56380
+}
 radio.onReceivedNumber(function (receivedNumber) {
     if (receivedNumber == 0) {
         radio.sendNumber(1)
@@ -124,6 +128,7 @@ let appleY = 0
 let appleX = 0
 let id = 0
 let asked = 0
+basic.showIcon(IconNames.Happy)
 radio.setGroup(121)
 radio.sendNumber(0)
 asked = 1
