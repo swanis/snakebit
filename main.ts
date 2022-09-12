@@ -141,50 +141,61 @@ if (id == 0) {
     basic.pause(1000)
 }
 basic.forever(function () {
-    basic.clearScreen()
-    if (appleX != -1) {
-        led.plot(appleX, appleY)
-    }
-    if (current) {
-        led.plotBrightness(snakeX, snakeY, 200)
-    }
-    while (current) {
-        basic.pause(speed)
-        snakeX += dX
-        snakeY += dY
-        if (snakeX > 4) {
-            radio.setGroup(122 + (id + 1))
-            exists = 0
-            radio.sendString("ping")
-            basic.pause(100)
-            if (exists) {
-                current = 0
-                radio.sendValue("snakeX", 0)
-                radio.sendValue("snakeY", snakeY)
-                radio.sendValue("dX", dX)
-                radio.sendValue("dY", dY)
-                radio.sendValue("current", 1)
-            } else {
-                if (id == 0) {
-                    snakeX = 0
-                } else {
-                    radio.setGroup(122)
+    if (started) {
+        basic.clearScreen()
+        if (appleX != -1) {
+            led.plot(appleX, appleY)
+        }
+        if (current) {
+            led.plotBrightness(snakeX, snakeY, 200)
+        }
+        while (current) {
+            basic.pause(speed)
+            snakeX += dX
+            snakeY += dY
+            if (snakeX > 4) {
+                radio.setGroup(122 + (id + 1))
+                exists = 0
+                radio.sendString("ping")
+                basic.pause(100)
+                if (exists) {
                     current = 0
                     radio.sendValue("snakeX", 0)
                     radio.sendValue("snakeY", snakeY)
                     radio.sendValue("dX", dX)
                     radio.sendValue("dY", dY)
                     radio.sendValue("current", 1)
-                }
-            }
-            radio.setGroup(122 + id)
-        } else if (snakeX < 0) {
-            if (id == 0) {
-                last = lastMicrobit()
-                if (last == 122) {
-                    snakeX = 4
                 } else {
-                    radio.setGroup(last)
+                    if (id == 0) {
+                        snakeX = 0
+                    } else {
+                        radio.setGroup(122)
+                        current = 0
+                        radio.sendValue("snakeX", 0)
+                        radio.sendValue("snakeY", snakeY)
+                        radio.sendValue("dX", dX)
+                        radio.sendValue("dY", dY)
+                        radio.sendValue("current", 1)
+                    }
+                }
+                radio.setGroup(122 + id)
+            } else if (snakeX < 0) {
+                if (id == 0) {
+                    last = lastMicrobit()
+                    if (last == 122) {
+                        snakeX = 4
+                    } else {
+                        radio.setGroup(last)
+                        current = 0
+                        radio.sendValue("snakeX", 4)
+                        radio.sendValue("snakeY", snakeY)
+                        radio.sendValue("dX", dX)
+                        radio.sendValue("dY", dY)
+                        radio.sendValue("current", 1)
+                        radio.setGroup(122 + id)
+                    }
+                } else {
+                    radio.setGroup(121 + id)
                     current = 0
                     radio.sendValue("snakeX", 4)
                     radio.sendValue("snakeY", snakeY)
@@ -193,26 +204,17 @@ basic.forever(function () {
                     radio.sendValue("current", 1)
                     radio.setGroup(122 + id)
                 }
-            } else {
-                radio.setGroup(121 + id)
-                current = 0
-                radio.sendValue("snakeX", 4)
-                radio.sendValue("snakeY", snakeY)
-                radio.sendValue("dX", dX)
-                radio.sendValue("dY", dY)
-                radio.sendValue("current", 1)
-                radio.setGroup(122 + id)
+            } else if (snakeY > 4) {
+                snakeY = 0
+            } else if (snakeY < 0) {
+                snakeY = 4
             }
-        } else if (snakeY > 4) {
-            snakeY = 0
-        } else if (snakeY < 0) {
-            snakeY = 4
+            basic.clearScreen()
+            led.plotBrightness(snakeX, snakeY, 200)
+            if (appleX != -1) {
+                led.plot(appleX, appleY)
+            }
+            turned = 0
         }
-        basic.clearScreen()
-        led.plotBrightness(snakeX, snakeY, 200)
-        if (appleX != -1) {
-            led.plot(appleX, appleY)
-        }
-        turned = 0
     }
 })
