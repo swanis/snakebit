@@ -84,6 +84,7 @@ input.onButtonPressed(Button.B, function () {
 input.onGesture(Gesture.Shake, function () {
     if (!(started)) {
         radio.sendNumber(2)
+        basic.pause(100)
         r = randint(122, lastMicrobit())
         if (r == 122 + id) {
             createApple()
