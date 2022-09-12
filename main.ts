@@ -46,7 +46,7 @@ function lastMicrobit () {
         }
     }
     radio.setGroup(122 + id)
-    return -1
+    return 128
 }
 function createApple () {
     appleX = randint(0, 4)
@@ -128,6 +128,7 @@ let appleY = 0
 let appleX = 0
 let id = 0
 let asked = 0
+let score = 0
 basic.showIcon(IconNames.Happy)
 radio.setGroup(121)
 radio.sendNumber(0)
@@ -151,10 +152,12 @@ basic.forever(function () {
         if (appleX != -1) {
             led.plot(appleX, appleY)
         }
-        if (current) {
-            led.plotBrightness(snakeX, snakeY, 200)
-        }
         while (current) {
+            basic.clearScreen()
+            if (appleX != -1) {
+                led.plot(appleX, appleY)
+            }
+            led.plotBrightness(snakeX, snakeY, 200)
             basic.pause(speed)
             snakeX += dX
             snakeY += dY
@@ -174,8 +177,8 @@ basic.forever(function () {
                     if (id == 0) {
                         snakeX = 0
                     } else {
-                        radio.setGroup(122)
                         current = 0
+                        radio.setGroup(122)
                         radio.sendValue("snakeX", 0)
                         radio.sendValue("snakeY", snakeY)
                         radio.sendValue("dX", dX)
@@ -190,8 +193,8 @@ basic.forever(function () {
                     if (last == 122) {
                         snakeX = 4
                     } else {
-                        radio.setGroup(last)
                         current = 0
+                        radio.setGroup(last)
                         radio.sendValue("snakeX", 4)
                         radio.sendValue("snakeY", snakeY)
                         radio.sendValue("dX", dX)
@@ -200,8 +203,8 @@ basic.forever(function () {
                         radio.setGroup(122 + id)
                     }
                 } else {
-                    radio.setGroup(121 + id)
                     current = 0
+                    radio.setGroup(121 + id)
                     radio.sendValue("snakeX", 4)
                     radio.sendValue("snakeY", snakeY)
                     radio.sendValue("dX", dX)
@@ -213,11 +216,6 @@ basic.forever(function () {
                 snakeY = 0
             } else if (snakeY < 0) {
                 snakeY = 4
-            }
-            basic.clearScreen()
-            led.plotBrightness(snakeX, snakeY, 200)
-            if (appleX != -1) {
-                led.plot(appleX, appleY)
             }
             turned = 0
         }
