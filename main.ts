@@ -34,6 +34,15 @@ input.onButtonPressed(Button.A, function () {
         }
     }
 })
+input.onGesture(Gesture.Shake, function () {
+    if (!(started)) {
+        createApple()
+        radio.sendNumber(2)
+        radio.setGroup(122 + id)
+        started = 1
+        current = 1
+    }
+})
 function lastMicrobit () {
     for (let index = 0; index <= 5; index++) {
         radio.setGroup(123 + index)
@@ -66,7 +75,23 @@ function createApple () {
 }
 radio.onReceivedString(function (receivedString) {
     if (receivedString == "ping") {
-        radio.sendString("pong")
+        if (blocked > 0) {
+            radio.sendString("pong")
+        } else {
+            if (dX == 1) {
+                dX = 0
+                dY = -1
+            } else if (dX == -1) {
+                dX = 0
+                dY = 1
+            } else if (dY == -1) {
+                dY = 0
+                dX = -1
+            } else if (dY == 1) {
+                dY = 0
+                dX = 1
+            }
+        }
     } else if (receivedString == "pong") {
         exists = 1
     } else if (receivedString == "apple") {
@@ -93,15 +118,6 @@ input.onButtonPressed(Button.B, function () {
         }
     }
 })
-input.onGesture(Gesture.Shake, function () {
-    if (!(started)) {
-        createApple()
-        radio.sendNumber(2)
-        radio.setGroup(122 + id)
-        started = 1
-        current = 1
-    }
-})
 radio.onReceivedValue(function (name, value) {
     if (name == "snakeX") {
         snakeX = value
@@ -118,8 +134,9 @@ radio.onReceivedValue(function (name, value) {
     }
 })
 let last = 0
-let current = 0
+let blocked = 0
 let exists = 0
+let current = 0
 let turned = 0
 let started = 0
 let dY = 0
@@ -153,6 +170,11 @@ dX = 1
 dY = 0
 basic.forever(function () {
     if (started) {
+        if (input.lightLevel() == 0) {
+            blocked = 1
+        } else {
+            blocked = 0
+        }
         basic.clearScreen()
         while (current) {
             basic.clearScreen()
