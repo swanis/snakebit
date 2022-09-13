@@ -48,10 +48,18 @@ function lastMicrobit () {
     radio.setGroup(122 + id)
     return 128
 }
+function inTail (x: number, y: number) {
+    for (let index = 0; index <= tailX.length - 1; index++) {
+        if (tailX[index] == x && tailY[index] == y) {
+            return true
+        }
+    }
+    return false
+}
 function createApple () {
     appleX = randint(0, 4)
     appleY = randint(0, 4)
-    while (appleX == snakeX && appleY == snakeY) {
+    while (appleX == snakeX && appleY == snakeY || inTail(snakeX, snakeY)) {
         appleX = randint(0, 4)
         appleY = randint(0, 4)
     }
