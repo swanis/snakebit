@@ -74,7 +74,7 @@ input.onButtonPressed(Button.B, function () {
             } else if (dX == -1) {
                 dX = 0
                 dY = -1
-            } else if (dY == -1) {
+            } else if (dY == 0) {
                 dY = 0
                 dX = 1
             } else if (dY == 1) {
@@ -124,6 +124,8 @@ let dY = 0
 let dX = 0
 let snakeY = 0
 let snakeX = 0
+let tailY: number[] = []
+let tailX: number[] = []
 let appleY = 0
 let appleX = 0
 let id = 0
@@ -139,6 +141,9 @@ basic.showNumber(id)
 let speed = 1000
 appleX = -1
 appleY = -1
+let tailLength = 2
+tailX.shift()
+tailY.shift()
 if (id == 0) {
     snakeX = 2
     snakeY = 2
@@ -157,8 +162,17 @@ basic.forever(function () {
             if (appleX != -1) {
                 led.plot(appleX, appleY)
             }
+            for (let index = 0; index <= tailX.length - 1; index++) {
+                led.plotBrightness(tailX[index], tailY[index], 99)
+            }
             led.plotBrightness(snakeX, snakeY, 200)
             basic.pause(speed)
+            tailX.push(snakeX)
+            tailY.push(snakeY)
+            if (tailX.length > tailLength) {
+                tailX.shift()
+                tailY.shift()
+            }
             snakeX += dX
             snakeY += dY
             if (snakeX > 4) {
@@ -167,6 +181,10 @@ basic.forever(function () {
                 radio.sendString("ping")
                 basic.pause(100)
                 if (exists) {
+                    for (let index = 0; index < tailX.length + 1; index++) {
+                        tailX.pop()
+                        tailY.pop()
+                    }
                     current = 0
                     radio.sendValue("snakeX", 0)
                     radio.sendValue("snakeY", snakeY)
@@ -177,6 +195,10 @@ basic.forever(function () {
                     if (id == 0) {
                         snakeX = 0
                     } else {
+                        for (let index = 0; index < tailX.length + 1; index++) {
+                            tailX.pop()
+                            tailY.pop()
+                        }
                         current = 0
                         radio.setGroup(122)
                         radio.sendValue("snakeX", 0)
@@ -193,6 +215,10 @@ basic.forever(function () {
                     if (last == 122) {
                         snakeX = 4
                     } else {
+                        for (let index = 0; index < tailX.length + 1; index++) {
+                            tailX.pop()
+                            tailY.pop()
+                        }
                         current = 0
                         radio.setGroup(last)
                         radio.sendValue("snakeX", 4)
@@ -203,6 +229,10 @@ basic.forever(function () {
                         radio.setGroup(122 + id)
                     }
                 } else {
+                    for (let index = 0; index < tailX.length + 1; index++) {
+                        tailX.pop()
+                        tailY.pop()
+                    }
                     current = 0
                     radio.setGroup(121 + id)
                     radio.sendValue("snakeX", 4)
