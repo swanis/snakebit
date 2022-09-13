@@ -75,22 +75,8 @@ function createApple () {
 }
 radio.onReceivedString(function (receivedString) {
     if (receivedString == "ping") {
-        if (blocked > 0) {
+        if (blocked == 0) {
             radio.sendString("pong")
-        } else {
-            if (dX == 1) {
-                dX = 0
-                dY = -1
-            } else if (dX == -1) {
-                dX = 0
-                dY = 1
-            } else if (dY == -1) {
-                dY = 0
-                dX = -1
-            } else if (dY == 1) {
-                dY = 0
-                dX = 1
-            }
         }
     } else if (receivedString == "pong") {
         exists = 1
