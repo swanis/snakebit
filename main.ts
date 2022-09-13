@@ -151,13 +151,9 @@ snakeX = 2
 snakeY = 2
 dX = 1
 dY = 0
-basic.pause(1000)
 basic.forever(function () {
     if (started) {
         basic.clearScreen()
-        if (appleX != -1) {
-            led.plot(appleX, appleY)
-        }
         while (current) {
             basic.clearScreen()
             if (inTail(snakeX, snakeY)) {
