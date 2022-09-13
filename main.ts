@@ -34,32 +34,37 @@ input.onButtonPressed(Button.A, function () {
         }
     }
 })
-input.onGesture(Gesture.Shake, function () {
-    if (!(started)) {
-        createApple()
-        radio.sendNumber(2)
-        radio.setGroup(122 + id)
-        started = 1
-        current = 1
-    }
-})
-function lastMicrobit () {
-    for (let index = 0; index <= 5; index++) {
-        radio.setGroup(123 + index)
+function firstMicrobit () {
+    for (let index = 0; index <= id; index++) {
+        radio.setGroup(122 + id - (index + 1))
         exists = 0
         radio.sendString("ping")
         basic.pause(100)
         if (!(exists)) {
             radio.setGroup(122 + id)
-            return 122 + index
+            return 122 + id - index
+        }
+    }
+    radio.setGroup(122 + id)
+    return 122
+}
+function lastMicrobit () {
+    for (let index2 = 0; index2 <= 128 - (122 + id + 1); index2++) {
+        radio.setGroup(123 + id + index2)
+        exists = 0
+        radio.sendString("ping")
+        basic.pause(100)
+        if (!(exists)) {
+            radio.setGroup(122 + id)
+            return 122 + id + index2
         }
     }
     radio.setGroup(122 + id)
     return 128
 }
 function inTail (x: number, y: number) {
-    for (let index = 0; index <= tailX.length - 1; index++) {
-        if (tailX[index] == x && tailY[index] == y) {
+    for (let index3 = 0; index3 <= tailX.length - 1; index3++) {
+        if (tailX[index3] == x && tailY[index3] == y) {
             return true
         }
     }
@@ -75,7 +80,7 @@ function createApple () {
 }
 radio.onReceivedString(function (receivedString) {
     if (receivedString == "ping") {
-        if (blocked == 0) {
+        if (input.lightLevel() != 0) {
             radio.sendString("pong")
         }
     } else if (receivedString == "pong") {
@@ -104,6 +109,15 @@ input.onButtonPressed(Button.B, function () {
         }
     }
 })
+input.onGesture(Gesture.Shake, function () {
+    if (!(started)) {
+        createApple()
+        radio.sendNumber(2)
+        radio.setGroup(122 + id)
+        started = 1
+        current = 1
+    }
+})
 radio.onReceivedValue(function (name, value) {
     if (name == "snakeX") {
         snakeX = value
@@ -120,9 +134,9 @@ radio.onReceivedValue(function (name, value) {
     }
 })
 let last = 0
-let blocked = 0
-let exists = 0
+let first = 0
 let current = 0
+let exists = 0
 let turned = 0
 let started = 0
 let dY = 0
@@ -156,11 +170,6 @@ dX = 1
 dY = 0
 basic.forever(function () {
     if (started) {
-        if (input.lightLevel() == 0) {
-            blocked = 1
-        } else {
-            blocked = 0
-        }
         basic.clearScreen()
         while (current) {
             basic.clearScreen()
@@ -177,8 +186,8 @@ basic.forever(function () {
                 }
                 led.plot(appleX, appleY)
             }
-            for (let index = 0; index <= tailX.length - 1; index++) {
-                led.plotBrightness(tailX[index], tailY[index], 99)
+            for (let index4 = 0; index4 <= tailX.length - 1; index4++) {
+                led.plotBrightness(tailX[index4], tailY[index4], 99)
             }
             led.plotBrightness(snakeX, snakeY, 200)
             basic.pause(speed)
@@ -212,7 +221,8 @@ basic.forever(function () {
                     tailLength = 2
                     radio.sendValue("current", 1)
                 } else {
-                    if (id == 0) {
+                    first = firstMicrobit()
+                    if (122 + id == first) {
                         snakeX = 0
                     } else {
                         while (tailX.length > 0 || tailY.length > 0) {
@@ -220,7 +230,7 @@ basic.forever(function () {
                             tailY.pop()
                         }
                         current = 0
-                        radio.setGroup(122)
+                        radio.setGroup(first)
                         radio.sendValue("snakeX", 0)
                         radio.sendValue("snakeY", snakeY)
                         radio.sendValue("dX", dX)
@@ -235,9 +245,10 @@ basic.forever(function () {
                 }
                 radio.setGroup(122 + id)
             } else if (snakeX < 0) {
-                if (id == 0) {
+                first = firstMicrobit()
+                if (122 + id == first) {
                     last = lastMicrobit()
-                    if (last == 122) {
+                    if (first == last) {
                         snakeX = 4
                     } else {
                         while (tailX.length > 0 || tailY.length > 0) {
