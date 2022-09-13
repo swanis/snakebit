@@ -162,6 +162,11 @@ basic.forever(function () {
         }
         while (current) {
             basic.clearScreen()
+            if (inTail(snakeX, snakeY)) {
+                started = 0
+                basic.showNumber(score)
+                continue;
+            }
             if (appleX != -1) {
                 if (snakeX == appleX && snakeY == appleY) {
                     score += tailLength - 1
