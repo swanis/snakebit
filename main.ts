@@ -74,7 +74,7 @@ input.onButtonPressed(Button.B, function () {
             } else if (dX == -1) {
                 dX = 0
                 dY = -1
-            } else if (dY == 0) {
+            } else if (dY == -1) {
                 dY = 0
                 dX = 1
             } else if (dY == 1) {
@@ -87,15 +87,8 @@ input.onButtonPressed(Button.B, function () {
 })
 input.onGesture(Gesture.Shake, function () {
     if (!(started)) {
+        createApple()
         radio.sendNumber(2)
-        basic.pause(100)
-        r = randint(122, lastMicrobit())
-        if (r == 122 + id) {
-            createApple()
-        } else {
-            radio.setGroup(r)
-            radio.sendString("apple")
-        }
         radio.setGroup(122 + id)
         started = 1
         current = 1
@@ -110,13 +103,14 @@ radio.onReceivedValue(function (name, value) {
         dX = value
     } else if (name == "dY") {
         dY = value
+    } else if (name == "score") {
+        score = value
     } else if (name == "current") {
         current = value
     }
 })
 let last = 0
 let current = 0
-let r = 0
 let exists = 0
 let turned = 0
 let started = 0
@@ -131,6 +125,7 @@ let appleX = 0
 let id = 0
 let asked = 0
 let score = 0
+score = 0
 basic.showIcon(IconNames.Happy)
 radio.setGroup(121)
 radio.sendNumber(0)
@@ -160,6 +155,11 @@ basic.forever(function () {
         while (current) {
             basic.clearScreen()
             if (appleX != -1) {
+                if (snakeX == appleX && snakeY == appleY) {
+                    score += tailLength - 1
+                    tailLength += 1
+                    createApple()
+                }
                 led.plot(appleX, appleY)
             }
             for (let index = 0; index <= tailX.length - 1; index++) {
@@ -181,7 +181,7 @@ basic.forever(function () {
                 radio.sendString("ping")
                 basic.pause(100)
                 if (exists) {
-                    for (let index = 0; index < tailX.length + 1; index++) {
+                    while (tailX.length > 0 || tailY.length > 0) {
                         tailX.pop()
                         tailY.pop()
                     }
@@ -190,12 +190,17 @@ basic.forever(function () {
                     radio.sendValue("snakeY", snakeY)
                     radio.sendValue("dX", dX)
                     radio.sendValue("dY", dY)
+                    radio.sendValue("score", score)
+                    radio.sendString("apple")
+                    appleX = -1
+                    appleY = -1
+                    tailLength = 2
                     radio.sendValue("current", 1)
                 } else {
                     if (id == 0) {
                         snakeX = 0
                     } else {
-                        for (let index = 0; index < tailX.length + 1; index++) {
+                        while (tailX.length > 0 || tailY.length > 0) {
                             tailX.pop()
                             tailY.pop()
                         }
@@ -205,6 +210,11 @@ basic.forever(function () {
                         radio.sendValue("snakeY", snakeY)
                         radio.sendValue("dX", dX)
                         radio.sendValue("dY", dY)
+                        radio.sendValue("score", score)
+                        radio.sendString("apple")
+                        appleX = -1
+                        appleY = -1
+                        tailLength = 2
                         radio.sendValue("current", 1)
                     }
                 }
@@ -215,7 +225,7 @@ basic.forever(function () {
                     if (last == 122) {
                         snakeX = 4
                     } else {
-                        for (let index = 0; index < tailX.length + 1; index++) {
+                        while (tailX.length > 0 || tailY.length > 0) {
                             tailX.pop()
                             tailY.pop()
                         }
@@ -225,11 +235,16 @@ basic.forever(function () {
                         radio.sendValue("snakeY", snakeY)
                         radio.sendValue("dX", dX)
                         radio.sendValue("dY", dY)
+                        radio.sendValue("score", score)
+                        radio.sendString("apple")
+                        appleX = -1
+                        appleY = -1
+                        tailLength = 2
                         radio.sendValue("current", 1)
                         radio.setGroup(122 + id)
                     }
                 } else {
-                    for (let index = 0; index < tailX.length + 1; index++) {
+                    while (tailX.length > 0 || tailY.length > 0) {
                         tailX.pop()
                         tailY.pop()
                     }
@@ -239,6 +254,11 @@ basic.forever(function () {
                     radio.sendValue("snakeY", snakeY)
                     radio.sendValue("dX", dX)
                     radio.sendValue("dY", dY)
+                    radio.sendValue("score", score)
+                    radio.sendString("apple")
+                    appleX = -1
+                    appleY = -1
+                    tailLength = 2
                     radio.sendValue("current", 1)
                     radio.setGroup(122 + id)
                 }
