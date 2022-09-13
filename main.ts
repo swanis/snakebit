@@ -147,13 +147,11 @@ appleY = -1
 let tailLength = 2
 tailX.shift()
 tailY.shift()
-if (id == 0) {
-    snakeX = 2
-    snakeY = 2
-    dX = 1
-    dY = 0
-    basic.pause(1000)
-}
+snakeX = 2
+snakeY = 2
+dX = 1
+dY = 0
+basic.pause(1000)
 basic.forever(function () {
     if (started) {
         basic.clearScreen()
