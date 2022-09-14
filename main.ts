@@ -1,7 +1,3 @@
-enum RadioMessage {
-    message1 = 49434,
-    start = 56380
-}
 radio.onReceivedNumber(function (receivedNumber) {
     if (receivedNumber == 0) {
         radio.sendNumber(1)
@@ -14,6 +10,15 @@ radio.onReceivedNumber(function (receivedNumber) {
         started = 1
     }
 })
+function changeCurrent (x: number) {
+    radio.sendValue("snakeX", x)
+    radio.sendValue("snakeY", snakeY)
+    radio.sendValue("dX", dX)
+    radio.sendValue("dY", dY)
+    radio.sendValue("score", score)
+    radio.sendString("apple")
+    radio.sendValue("current", 1)
+}
 input.onButtonPressed(Button.A, function () {
     if (started) {
         if (!(turned)) {
@@ -47,6 +52,16 @@ function firstMicrobit () {
     }
     radio.setGroup(122 + id)
     return 122
+}
+function resetCurrent () {
+    while (tailX.length > 0 || tailY.length > 0) {
+        tailX.pop()
+        tailY.pop()
+    }
+    appleX = -1
+    appleY = -1
+    tailLength = 2
+    current = 0
 }
 function lastMicrobit () {
     for (let index2 = 0; index2 <= 128 - (122 + id + 1); index2++) {
@@ -145,6 +160,7 @@ let snakeY = 0
 let snakeX = 0
 let tailY: number[] = []
 let tailX: number[] = []
+let tailLength = 0
 let appleY = 0
 let appleX = 0
 let id = 0
@@ -162,7 +178,7 @@ basic.showNumber(id)
 let speed = 1000
 appleX = -1
 appleY = -1
-let tailLength = 2
+tailLength = 2
 tailX.shift()
 tailY.shift()
 snakeX = 2
@@ -206,89 +222,38 @@ basic.forever(function () {
                 radio.sendString("ping")
                 basic.pause(100)
                 if (exists) {
-                    while (tailX.length > 0 || tailY.length > 0) {
-                        tailX.pop()
-                        tailY.pop()
-                    }
-                    current = 0
-                    radio.sendValue("snakeX", 0)
-                    radio.sendValue("snakeY", snakeY)
-                    radio.sendValue("dX", dX)
-                    radio.sendValue("dY", dY)
-                    radio.sendValue("score", score)
-                    radio.sendString("apple")
-                    appleX = -1
-                    appleY = -1
-                    tailLength = 2
-                    radio.sendValue("current", 1)
+                    resetCurrent()
+                    changeCurrent(0)
                 } else {
                     first = firstMicrobit()
                     if (122 + id == first) {
                         snakeX = 0
                     } else {
-                        while (tailX.length > 0 || tailY.length > 0) {
-                            tailX.pop()
-                            tailY.pop()
-                        }
-                        current = 0
+                        resetCurrent()
                         radio.setGroup(first)
-                        radio.sendValue("snakeX", 0)
-                        radio.sendValue("snakeY", snakeY)
-                        radio.sendValue("dX", dX)
-                        radio.sendValue("dY", dY)
-                        radio.sendValue("score", score)
-                        radio.sendString("apple")
-                        appleX = -1
-                        appleY = -1
-                        tailLength = 2
-                        radio.sendValue("current", 1)
+                        changeCurrent(0)
                     }
                 }
                 radio.setGroup(122 + id)
             } else if (snakeX < 0) {
-                first = firstMicrobit()
-                if (122 + id == first) {
+                radio.setGroup(122 + (id - 1))
+                exists = 0
+                radio.sendString("ping")
+                basic.pause(100)
+                if (exists) {
+                    resetCurrent()
+                    changeCurrent(4)
+                } else {
                     last = lastMicrobit()
-                    if (first == last) {
+                    if (122 + id == last) {
                         snakeX = 4
                     } else {
-                        while (tailX.length > 0 || tailY.length > 0) {
-                            tailX.pop()
-                            tailY.pop()
-                        }
-                        current = 0
+                        resetCurrent()
                         radio.setGroup(last)
-                        radio.sendValue("snakeX", 4)
-                        radio.sendValue("snakeY", snakeY)
-                        radio.sendValue("dX", dX)
-                        radio.sendValue("dY", dY)
-                        radio.sendValue("score", score)
-                        radio.sendString("apple")
-                        appleX = -1
-                        appleY = -1
-                        tailLength = 2
-                        radio.sendValue("current", 1)
-                        radio.setGroup(122 + id)
+                        changeCurrent(4)
                     }
-                } else {
-                    while (tailX.length > 0 || tailY.length > 0) {
-                        tailX.pop()
-                        tailY.pop()
-                    }
-                    current = 0
-                    radio.setGroup(121 + id)
-                    radio.sendValue("snakeX", 4)
-                    radio.sendValue("snakeY", snakeY)
-                    radio.sendValue("dX", dX)
-                    radio.sendValue("dY", dY)
-                    radio.sendValue("score", score)
-                    radio.sendString("apple")
-                    appleX = -1
-                    appleY = -1
-                    tailLength = 2
-                    radio.sendValue("current", 1)
-                    radio.setGroup(122 + id)
                 }
+                radio.setGroup(122 + id)
             } else if (snakeY > 4) {
                 snakeY = 0
             } else if (snakeY < 0) {
