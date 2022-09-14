@@ -153,6 +153,7 @@ let score = 0
 score = 0
 basic.showIcon(IconNames.Happy)
 radio.setGroup(121)
+basic.pause(100)
 radio.sendNumber(0)
 asked = 1
 basic.pause(1000)
