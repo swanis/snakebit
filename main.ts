@@ -95,7 +95,7 @@ function createApple () {
 }
 radio.onReceivedString(function (receivedString) {
     if (receivedString == "ping") {
-        if (input.lightLevel() != 0) {
+        if (started && input.lightLevel() != 0) {
             radio.sendString("pong")
         }
     } else if (receivedString == "pong") {
