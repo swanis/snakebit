@@ -73,7 +73,7 @@ function inTail (x: number, y: number) {
 function createApple () {
     appleX = randint(0, 4)
     appleY = randint(0, 4)
-    while (appleX == snakeX && appleY == snakeY || inTail(snakeX, snakeY)) {
+    while (appleX == snakeX && appleY == snakeY || inTail(appleX, appleY)) {
         appleX = randint(0, 4)
         appleY = randint(0, 4)
     }
