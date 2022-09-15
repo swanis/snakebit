@@ -7,6 +7,7 @@ radio.onReceivedNumber(function (receivedNumber) {
         }
     } else if (receivedNumber == 2) {
         radio.setGroup(122 + id)
+        basic.pause(50)
         started = 1
     }
 })
@@ -36,15 +37,18 @@ input.onButtonPressed(Button.A, function () {
 function firstMicrobit () {
     for (let index = 0; index <= id; index++) {
         radio.setGroup(122 + id - (index + 1))
+        basic.pause(50)
         exists = 0
         radio.sendString("ping")
         basic.pause(100)
         if (!(exists)) {
             radio.setGroup(122 + id)
+            basic.pause(50)
             return 122 + id - index
         }
     }
     radio.setGroup(122 + id)
+    basic.pause(50)
     return 122
 }
 function resetCurrent () {
@@ -60,15 +64,18 @@ function resetCurrent () {
 function lastMicrobit () {
     for (let index2 = 0; index2 <= 128 - (122 + id + 1); index2++) {
         radio.setGroup(123 + id + index2)
+        basic.pause(50)
         exists = 0
         radio.sendString("ping")
         basic.pause(100)
         if (!(exists)) {
             radio.setGroup(122 + id)
+            basic.pause(50)
             return 122 + id + index2
         }
     }
     radio.setGroup(122 + id)
+    basic.pause(50)
     return 128
 }
 function inTail (x: number, y: number) {
@@ -132,6 +139,7 @@ input.onGesture(Gesture.Shake, function () {
         createApple()
         radio.sendNumber(2)
         radio.setGroup(122 + id)
+        basic.pause(50)
         started = 1
         current = 1
     }
@@ -215,6 +223,7 @@ basic.forever(function () {
             snakeY += dY
             if (snakeX > 4) {
                 radio.setGroup(122 + (id + 1))
+                basic.pause(50)
                 exists = 0
                 radio.sendString("ping")
                 basic.pause(100)
@@ -228,12 +237,15 @@ basic.forever(function () {
                     } else {
                         resetCurrent()
                         radio.setGroup(first)
+                        basic.pause(50)
                         changeCurrent(0)
                     }
                 }
                 radio.setGroup(122 + id)
+                basic.pause(50)
             } else if (snakeX < 0) {
                 radio.setGroup(122 + (id - 1))
+                basic.pause(50)
                 exists = 0
                 radio.sendString("ping")
                 basic.pause(100)
@@ -251,6 +263,7 @@ basic.forever(function () {
                     }
                 }
                 radio.setGroup(122 + id)
+                basic.pause(50)
             } else if (snakeY > 4) {
                 snakeY = 0
             } else if (snakeY < 0) {
