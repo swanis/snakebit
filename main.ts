@@ -11,13 +11,7 @@ radio.onReceivedNumber(function (receivedNumber) {
     }
 })
 function changeCurrent (x: number) {
-    radio.sendValue("snakeX", x)
-    radio.sendValue("snakeY", snakeY)
-    radio.sendValue("dX", dX)
-    radio.sendValue("dY", dY)
-    radio.sendValue("score", score)
-    radio.sendString("apple")
-    radio.sendValue("current", 1)
+    radio.sendString("" + x + ":" + snakeY + ":" + dX + ":" + dY + ":" + score)
 }
 input.onButtonPressed(Button.A, function () {
     if (started) {
@@ -102,6 +96,15 @@ radio.onReceivedString(function (receivedString) {
         exists = 1
     } else if (receivedString == "apple") {
         createApple()
+    } else {
+        arr = receivedString.split(":")
+        snakeX = parseInt(arr[0])
+        snakeY = parseInt(arr[1])
+        dX = parseInt(arr[2])
+        dY = parseInt(arr[3])
+        score = parseInt(arr[4])
+        createApple()
+        current = 1
     }
 })
 input.onButtonPressed(Button.B, function () {
@@ -133,23 +136,9 @@ input.onGesture(Gesture.Shake, function () {
         current = 1
     }
 })
-radio.onReceivedValue(function (name, value) {
-    if (name == "snakeX") {
-        snakeX = value
-    } else if (name == "snakeY") {
-        snakeY = value
-    } else if (name == "dX") {
-        dX = value
-    } else if (name == "dY") {
-        dY = value
-    } else if (name == "score") {
-        score = value
-    } else if (name == "current") {
-        current = value
-    }
-})
 let last = 0
 let first = 0
+let arr: string[] = []
 let blocked = 0
 let current = 0
 let exists = 0
@@ -210,8 +199,10 @@ basic.forever(function () {
                 led.plot(appleX, appleY)
             }
             for (let index4 = 0; index4 <= tailX.length - 1; index4++) {
+                basic.pause(50)
                 led.plotBrightness(tailX[index4], tailY[index4], 99)
             }
+            basic.pause(50)
             led.plotBrightness(snakeX, snakeY, 200)
             basic.pause(speed)
             tailX.push(snakeX)
