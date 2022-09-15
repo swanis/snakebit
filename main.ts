@@ -186,7 +186,7 @@ dY = 0
 basic.forever(function () {
     if (started) {
         basic.clearScreen()
-        if (input.lightLevel() == 0) {
+        if (input.lightLevel() > 200) {
             blocked = 1
         } else {
             blocked = 0
