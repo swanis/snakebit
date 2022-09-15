@@ -95,7 +95,7 @@ function createApple () {
 }
 radio.onReceivedString(function (receivedString) {
     if (receivedString == "ping") {
-        if (started && input.lightLevel() != 0) {
+        if (started && !(blocked)) {
             radio.sendString("pong")
         }
     } else if (receivedString == "pong") {
@@ -150,6 +150,7 @@ radio.onReceivedValue(function (name, value) {
 })
 let last = 0
 let first = 0
+let blocked = 0
 let current = 0
 let exists = 0
 let turned = 0
@@ -188,6 +189,11 @@ dY = 0
 basic.forever(function () {
     if (started) {
         basic.clearScreen()
+        if (input.lightLevel() == 0) {
+            blocked = 1
+        } else {
+            blocked = 0
+        }
         while (current) {
             basic.clearScreen()
             if (inTail(snakeX, snakeY)) {
